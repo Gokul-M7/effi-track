@@ -226,30 +226,34 @@ const Employees = () => {
         </Dialog>
       </div>
 
-      <div className="border rounded-lg">
+      <div className="border rounded-lg shadow-md overflow-hidden animate-slide-up">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/50">
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Department</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="font-semibold">Name</TableHead>
+              <TableHead className="font-semibold">Email</TableHead>
+              <TableHead className="font-semibold">Department</TableHead>
+              <TableHead className="font-semibold">Status</TableHead>
+              <TableHead className="text-right font-semibold">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {employees.map((employee) => (
-              <TableRow key={employee.id}>
+              <TableRow key={employee.id} className="hover:bg-muted/30 transition-colors">
                 <TableCell className="font-medium">{employee.name}</TableCell>
-                <TableCell>{employee.email}</TableCell>
-                <TableCell>{employee.department}</TableCell>
+                <TableCell className="text-muted-foreground">{employee.email}</TableCell>
+                <TableCell>
+                  <Badge variant="outline" className="font-normal">
+                    {employee.department}
+                  </Badge>
+                </TableCell>
                 <TableCell>
                   <Badge
                     variant={employee.status === "active" ? "default" : "secondary"}
                     className={
                       employee.status === "active"
-                        ? "bg-success text-success-foreground"
-                        : "bg-muted"
+                        ? "bg-gradient-to-r from-success to-success/80 text-success-foreground shadow-sm"
+                        : "bg-muted text-muted-foreground"
                     }
                   >
                     {employee.status}
@@ -260,6 +264,7 @@ const Employees = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => openEditDialog(employee)}
+                    className="hover:bg-primary/10 hover:text-primary transition-colors"
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
@@ -267,6 +272,7 @@ const Employees = () => {
                     variant="ghost"
                     size="sm"
                     onClick={() => toggleEmployeeStatus(employee)}
+                    className="hover:bg-destructive/10 hover:text-destructive transition-colors"
                   >
                     {employee.status === "active" ? (
                       <UserX className="h-4 w-4 text-destructive" />

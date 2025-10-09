@@ -167,9 +167,9 @@ const Tasks = () => {
 
   const getStatusBadge = (status: string) => {
     const variants = {
-      pending: "bg-warning text-warning-foreground",
-      in_progress: "bg-primary text-primary-foreground",
-      completed: "bg-success text-success-foreground",
+      pending: "bg-gradient-to-r from-warning to-warning/80 text-warning-foreground shadow-sm",
+      in_progress: "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-sm",
+      completed: "bg-gradient-to-r from-success to-success/80 text-success-foreground shadow-sm",
     };
 
     return (
@@ -295,24 +295,24 @@ const Tasks = () => {
         </Dialog>
       </div>
 
-      <div className="border rounded-lg">
+      <div className="border rounded-lg shadow-md overflow-hidden animate-slide-up">
         <Table>
-          <TableHeader>
+          <TableHeader className="bg-muted/50">
             <TableRow>
-              <TableHead>Title</TableHead>
-              <TableHead>Description</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Deadline</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="font-semibold">Title</TableHead>
+              <TableHead className="font-semibold">Description</TableHead>
+              <TableHead className="font-semibold">Status</TableHead>
+              <TableHead className="font-semibold">Deadline</TableHead>
+              <TableHead className="text-right font-semibold">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {tasks.map((task) => (
-              <TableRow key={task.id}>
+              <TableRow key={task.id} className="hover:bg-muted/30 transition-colors">
                 <TableCell className="font-medium">{task.title}</TableCell>
-                <TableCell className="max-w-xs truncate">{task.description}</TableCell>
+                <TableCell className="max-w-xs truncate text-muted-foreground">{task.description}</TableCell>
                 <TableCell>{getStatusBadge(task.status)}</TableCell>
-                <TableCell>
+                <TableCell className="text-muted-foreground">
                   {task.deadline
                     ? new Date(task.deadline).toLocaleDateString()
                     : "No deadline"}
@@ -322,7 +322,7 @@ const Tasks = () => {
                     value={task.status}
                     onValueChange={(value) => updateTaskStatus(task.id, value)}
                   >
-                    <SelectTrigger className="w-32">
+                    <SelectTrigger className="w-36 hover:border-primary transition-colors">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

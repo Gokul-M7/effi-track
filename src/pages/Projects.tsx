@@ -183,36 +183,36 @@ const Projects = () => {
         </Dialog>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {projects.map((project) => (
-          <Card key={project.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <CardTitle className="line-clamp-1">{project.title}</CardTitle>
+          <Card key={project.id} className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-slide-up border-border/50">
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between gap-2">
+                <CardTitle className="line-clamp-1 text-lg">{project.title}</CardTitle>
                 <Badge
                   variant={project.status === "ongoing" ? "default" : "secondary"}
                   className={
                     project.status === "ongoing"
-                      ? "bg-primary text-primary-foreground"
-                      : "bg-success text-success-foreground"
+                      ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-sm"
+                      : "bg-gradient-to-r from-success to-success/80 text-success-foreground shadow-sm"
                   }
                 >
                   {project.status}
                 </Badge>
               </div>
-              <CardDescription className="line-clamp-2">
+              <CardDescription className="line-clamp-2 mt-2">
                 {project.description}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-4 w-4" />
+                <div className="flex items-center gap-1.5">
+                  <Calendar className="h-4 w-4 text-primary" />
                   <span>{new Date(project.start_date).toLocaleDateString()}</span>
                 </div>
                 {project.end_date && (
                   <>
-                    <span>→</span>
+                    <span className="text-muted-foreground/50">→</span>
                     <span>{new Date(project.end_date).toLocaleDateString()}</span>
                   </>
                 )}
