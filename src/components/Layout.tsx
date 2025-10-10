@@ -19,7 +19,7 @@ import {
   FolderKanban, 
   CheckSquare, 
   Trophy, 
-  MessageSquare,
+  Bot,
   LogOut
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
@@ -32,6 +32,7 @@ const menuItems = [
   { title: "Projects", url: "/projects", icon: FolderKanban },
   { title: "Tasks", url: "/tasks", icon: CheckSquare },
   { title: "Rewards", url: "/rewards", icon: Trophy },
+  { title: "AI Assistant", url: "/ai-chat", icon: Bot },
 ];
 
 interface LayoutProps {

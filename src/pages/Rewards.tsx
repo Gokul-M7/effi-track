@@ -148,21 +148,25 @@ const Rewards = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Rewards & Gamification</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-warning via-accent to-primary bg-clip-text text-transparent">
+            Rewards & Gamification
+          </h1>
+          <p className="text-muted-foreground mt-2">
             Track employee performance and award points
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="bg-gradient-to-r from-warning to-accent hover:from-warning/90 hover:to-accent/90 shadow-lg">
               <Plus className="mr-2 h-4 w-4" />
               Award Points
             </Button>
           </DialogTrigger>
-          <DialogContent>
+          <DialogContent className="border-2 border-warning/20">
             <DialogHeader>
-              <DialogTitle>Award Reward Points</DialogTitle>
+              <DialogTitle className="text-2xl bg-gradient-to-r from-warning to-accent bg-clip-text text-transparent">
+                Award Reward Points
+              </DialogTitle>
               <DialogDescription>
                 Award points to employees for their achievements
               </DialogDescription>
@@ -177,7 +181,7 @@ const Rewards = () => {
                   }
                   required
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="border-warning/30">
                     <SelectValue placeholder="Select employee" />
                   </SelectTrigger>
                   <SelectContent>
@@ -198,6 +202,7 @@ const Rewards = () => {
                   value={formData.points}
                   onChange={(e) => setFormData({ ...formData, points: e.target.value })}
                   required
+                  className="border-warning/30"
                 />
               </div>
               <div className="space-y-2">
@@ -208,9 +213,13 @@ const Rewards = () => {
                   onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                   rows={3}
                   required
+                  className="border-warning/30"
                 />
               </div>
-              <Button type="submit" className="w-full">
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-warning to-accent hover:from-warning/90 hover:to-accent/90"
+              >
                 Award Points
               </Button>
             </form>
@@ -222,21 +231,28 @@ const Rewards = () => {
         {employeePoints.map((emp, index) => (
           <Card
             key={emp.id}
-            className={`hover:shadow-lg transition-shadow ${
-              index < 3 ? "border-primary" : ""
+            className={`hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-slide-up ${
+              index === 0
+                ? "border-2 border-warning bg-gradient-to-br from-warning/5 to-warning/10"
+                : index === 1
+                ? "border-2 border-muted-foreground/30 bg-gradient-to-br from-muted/50 to-muted"
+                : index === 2
+                ? "border-2 border-accent bg-gradient-to-br from-accent/5 to-accent/10"
+                : "border-border"
             }`}
+            style={{ animationDelay: `${index * 0.1}s` }}
           >
             <CardHeader>
               <div className="flex items-start justify-between">
                 <CardTitle className="flex items-center gap-2">
                   <Trophy
-                    className={`h-5 w-5 ${
+                    className={`h-6 w-6 ${
                       index === 0
-                        ? "text-warning"
+                        ? "text-warning drop-shadow-lg"
                         : index === 1
                         ? "text-muted-foreground"
                         : index === 2
-                        ? "text-accent"
+                        ? "text-accent drop-shadow-lg"
                         : "text-muted-foreground"
                     }`}
                   />
@@ -247,14 +263,16 @@ const Rewards = () => {
               <CardDescription>Performance Overview</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Total Points:</span>
-                  <span className="text-xl font-bold text-primary">{emp.totalPoints}</span>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10">
+                  <span className="text-sm font-medium">Total Points:</span>
+                  <span className="text-2xl font-bold bg-gradient-to-r from-warning to-accent bg-clip-text text-transparent">
+                    {emp.totalPoints}
+                  </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Completed Tasks:</span>
-                  <Badge variant="outline">{emp.completedTasks}</Badge>
+                <div className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-success/10 to-success/5">
+                  <span className="text-sm font-medium">Completed Tasks:</span>
+                  <Badge className="bg-gradient-to-r from-success to-success/80">{emp.completedTasks}</Badge>
                 </div>
               </div>
             </CardContent>
@@ -263,10 +281,10 @@ const Rewards = () => {
       </div>
 
       {employeePoints.length === 0 && (
-        <Card>
+        <Card className="border-2 border-dashed border-warning/30">
           <CardContent className="py-12 text-center">
-            <Trophy className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-            <p className="text-muted-foreground">
+            <Trophy className="h-16 w-16 mx-auto mb-4 text-warning opacity-50" />
+            <p className="text-lg text-muted-foreground">
               No employee data available. Start awarding points to see the leaderboard!
             </p>
           </CardContent>

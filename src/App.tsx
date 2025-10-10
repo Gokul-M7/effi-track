@@ -9,8 +9,8 @@ import Employees from "./pages/Employees";
 import Projects from "./pages/Projects";
 import Tasks from "./pages/Tasks";
 import Rewards from "./pages/Rewards";
+import AIChat from "./pages/AIChat";
 import Layout from "./components/Layout";
-import Chatbot from "./components/Chatbot";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,10 +29,10 @@ const App = () => (
           <Route path="/projects" element={<Layout><Projects /></Layout>} />
           <Route path="/tasks" element={<Layout><Tasks /></Layout>} />
           <Route path="/rewards" element={<Layout><Rewards /></Layout>} />
+          <Route path="/ai-chat" element={<Layout><AIChat /></Layout>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-        <Chatbot />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

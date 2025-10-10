@@ -59,13 +59,13 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-accent/10 to-background p-4">
-      <Card className="w-full max-w-md shadow-lg">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 via-accent/15 to-warning/10 p-4">
+      <Card className="w-full max-w-md shadow-2xl border-2 border-primary/20 backdrop-blur-sm">
+        <CardHeader className="space-y-1 text-center">
+          <CardTitle className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-warning bg-clip-text text-transparent">
             EFFI-TRACK
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-base">
             {isSignUp ? "Create your admin account" : "Sign in to your admin account"}
           </CardDescription>
         </CardHeader>
@@ -81,6 +81,7 @@ const Auth = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
+                className="border-primary/30 focus:border-primary"
               />
             </div>
             <div className="space-y-2">
@@ -94,9 +95,14 @@ const Auth = () => {
                 required
                 disabled={isLoading}
                 minLength={6}
+                className="border-primary/30 focus:border-primary"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button 
+              type="submit" 
+              className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" 
+              disabled={isLoading}
+            >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -111,7 +117,7 @@ const Auth = () => {
             <Button
               type="button"
               variant="ghost"
-              className="w-full"
+              className="w-full hover:bg-accent/10"
               onClick={() => setIsSignUp(!isSignUp)}
               disabled={isLoading}
             >

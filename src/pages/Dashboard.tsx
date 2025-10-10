@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, FolderKanban, CheckSquare, Trophy, Bell } from "lucide-react";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [stats, setStats] = useState({
     totalEmployees: 0,
@@ -166,16 +168,32 @@ const Dashboard = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="flex flex-wrap gap-2">
-          <Badge variant="outline" className="cursor-pointer hover:scale-105 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 px-4 py-2">
+          <Badge 
+            variant="outline" 
+            className="cursor-pointer hover:scale-105 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-200 px-4 py-2"
+            onClick={() => navigate('/employees')}
+          >
             Add Employee
           </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:scale-105 hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200 px-4 py-2">
+          <Badge 
+            variant="outline" 
+            className="cursor-pointer hover:scale-105 hover:bg-accent hover:text-accent-foreground hover:border-accent transition-all duration-200 px-4 py-2"
+            onClick={() => navigate('/projects')}
+          >
             Create Project
           </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:scale-105 hover:bg-success hover:text-success-foreground hover:border-success transition-all duration-200 px-4 py-2">
+          <Badge 
+            variant="outline" 
+            className="cursor-pointer hover:scale-105 hover:bg-success hover:text-success-foreground hover:border-success transition-all duration-200 px-4 py-2"
+            onClick={() => navigate('/tasks')}
+          >
             Assign Task
           </Badge>
-          <Badge variant="outline" className="cursor-pointer hover:scale-105 hover:bg-warning hover:text-warning-foreground hover:border-warning transition-all duration-200 px-4 py-2">
+          <Badge 
+            variant="outline" 
+            className="cursor-pointer hover:scale-105 hover:bg-warning hover:text-warning-foreground hover:border-warning transition-all duration-200 px-4 py-2"
+            onClick={() => navigate('/rewards')}
+          >
             Award Points
           </Badge>
         </CardContent>
