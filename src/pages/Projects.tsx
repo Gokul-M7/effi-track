@@ -15,7 +15,7 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Calendar, Users as UsersIcon } from "lucide-react";
+import { Plus, Calendar, Users as UsersIcon, UserPlus } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -23,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Project {
   id: string;
@@ -31,12 +32,23 @@ interface Project {
   status: string;
   start_date: string;
   end_date: string | null;
+  assignedEmployees?: Employee[];
+}
+
+interface Employee {
+  id: string;
+  name: string;
+  email: string;
 }
 
 const Projects = () => {
   const { toast } = useToast();
   const [projects, setProjects] = useState<Project[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [assignDialogOpen, setAssignDialogOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -47,10 +59,11 @@ const Projects = () => {
 
   useEffect(() => {
     fetchProjects();
+    fetchEmployees();
   }, []);
 
   const fetchProjects = async () => {
-    const { data, error } = await supabase
+    const { data: projectsData, error } = await supabase
       .from("projects")
       .select("*")
       .order("created_at", { ascending: false });
@@ -61,8 +74,49 @@ const Projects = () => {
         description: error.message,
         variant: "destructive",
       });
+      return;
+    }
+
+    // Fetch assigned employees for each project
+    const projectsWithEmployees = await Promise.all(
+      (projectsData || []).map(async (project) => {
+        const { data: assignments } = await supabase
+          .from("project_assignments")
+          .select("employee_id")
+          .eq("project_id", project.id);
+
+        if (assignments && assignments.length > 0) {
+          const employeeIds = assignments.map((a) => a.employee_id);
+          const { data: employeesData } = await supabase
+            .from("employees")
+            .select("id, name, email")
+            .in("id", employeeIds);
+          
+          return { ...project, assignedEmployees: employeesData || [] };
+        }
+        
+        return { ...project, assignedEmployees: [] };
+      })
+    );
+
+    setProjects(projectsWithEmployees);
+  };
+
+  const fetchEmployees = async () => {
+    const { data, error } = await supabase
+      .from("employees")
+      .select("id, name, email")
+      .eq("status", "active")
+      .order("name");
+
+    if (error) {
+      toast({
+        title: "Error fetching employees",
+        description: error.message,
+        variant: "destructive",
+      });
     } else {
-      setProjects(data || []);
+      setEmployees(data || []);
     }
   };
 
@@ -70,12 +124,33 @@ const Projects = () => {
     e.preventDefault();
 
     try {
-      const { error } = await supabase.from("projects").insert([formData]);
+      const { data: newProject, error } = await supabase
+        .from("projects")
+        .insert([formData])
+        .select()
+        .single();
 
       if (error) throw error;
 
+      // Assign selected employees to the project
+      if (selectedEmployees.length > 0) {
+        const assignments = selectedEmployees.map((employeeId) => ({
+          project_id: newProject.id,
+          employee_id: employeeId,
+        }));
+
+        const { error: assignError } = await supabase
+          .from("project_assignments")
+          .insert(assignments);
+
+        if (assignError) throw assignError;
+      }
+
       toast({
         title: "Project created successfully",
+        description: selectedEmployees.length > 0 
+          ? `Assigned to ${selectedEmployees.length} employee(s)` 
+          : undefined,
       });
 
       setIsDialogOpen(false);
@@ -86,6 +161,7 @@ const Projects = () => {
         start_date: "",
         end_date: "",
       });
+      setSelectedEmployees([]);
       fetchProjects();
     } catch (error: any) {
       toast({
@@ -94,6 +170,62 @@ const Projects = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const openAssignDialog = (project: Project) => {
+    setSelectedProject(project);
+    setSelectedEmployees(project.assignedEmployees?.map((e) => e.id) || []);
+    setAssignDialogOpen(true);
+  };
+
+  const handleAssignEmployees = async () => {
+    if (!selectedProject) return;
+
+    try {
+      // Remove existing assignments
+      await supabase
+        .from("project_assignments")
+        .delete()
+        .eq("project_id", selectedProject.id);
+
+      // Add new assignments
+      if (selectedEmployees.length > 0) {
+        const assignments = selectedEmployees.map((employeeId) => ({
+          project_id: selectedProject.id,
+          employee_id: employeeId,
+        }));
+
+        const { error } = await supabase
+          .from("project_assignments")
+          .insert(assignments);
+
+        if (error) throw error;
+      }
+
+      toast({
+        title: "Employees assigned successfully",
+        description: `${selectedEmployees.length} employee(s) assigned to project`,
+      });
+
+      setAssignDialogOpen(false);
+      setSelectedProject(null);
+      setSelectedEmployees([]);
+      fetchProjects();
+    } catch (error: any) {
+      toast({
+        title: "Error assigning employees",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const toggleEmployee = (employeeId: string) => {
+    setSelectedEmployees((prev) =>
+      prev.includes(employeeId)
+        ? prev.filter((id) => id !== employeeId)
+        : [...prev, employeeId]
+    );
   };
 
   return (
@@ -175,6 +307,39 @@ const Projects = () => {
                   </SelectContent>
                 </Select>
               </div>
+              
+              <div className="space-y-3">
+                <Label>Assign Employees (Optional)</Label>
+                <div className="border rounded-lg p-4 max-h-48 overflow-y-auto space-y-2">
+                  {employees.length === 0 ? (
+                    <p className="text-sm text-muted-foreground text-center py-4">
+                      No active employees found
+                    </p>
+                  ) : (
+                    employees.map((employee) => (
+                      <div key={employee.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`employee-${employee.id}`}
+                          checked={selectedEmployees.includes(employee.id)}
+                          onCheckedChange={() => toggleEmployee(employee.id)}
+                        />
+                        <label
+                          htmlFor={`employee-${employee.id}`}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                        >
+                          {employee.name} ({employee.email})
+                        </label>
+                      </div>
+                    ))
+                  )}
+                </div>
+                {selectedEmployees.length > 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    {selectedEmployees.length} employee(s) selected
+                  </p>
+                )}
+              </div>
+
               <Button type="submit" className="w-full">
                 Create Project
               </Button>
@@ -204,7 +369,7 @@ const Projects = () => {
                 {project.description}
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1.5">
                   <Calendar className="h-4 w-4 text-primary" />
@@ -217,10 +382,101 @@ const Projects = () => {
                   </>
                 )}
               </div>
+
+              <div className="pt-3 border-t space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm">
+                    <UsersIcon className="h-4 w-4 text-primary" />
+                    <span className="font-medium">
+                      {project.assignedEmployees?.length || 0} Assigned
+                    </span>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openAssignDialog(project)}
+                    className="h-8"
+                  >
+                    <UserPlus className="h-3.5 w-3.5 mr-1" />
+                    Manage
+                  </Button>
+                </div>
+                {project.assignedEmployees && project.assignedEmployees.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {project.assignedEmployees.slice(0, 3).map((emp) => (
+                      <Badge key={emp.id} variant="secondary" className="text-xs">
+                        {emp.name}
+                      </Badge>
+                    ))}
+                    {project.assignedEmployees.length > 3 && (
+                      <Badge variant="secondary" className="text-xs">
+                        +{project.assignedEmployees.length - 3} more
+                      </Badge>
+                    )}
+                  </div>
+                )}
+              </div>
             </CardContent>
           </Card>
         ))}
       </div>
+
+      {/* Assign Employees Dialog */}
+      <Dialog open={assignDialogOpen} onOpenChange={setAssignDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Assign Employees to Project</DialogTitle>
+            <DialogDescription>
+              Select employees who will receive deadline alerts for {selectedProject?.title}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4 max-h-96 overflow-y-auto space-y-2">
+              {employees.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-8">
+                  No active employees found
+                </p>
+              ) : (
+                employees.map((employee) => (
+                  <div key={employee.id} className="flex items-center space-x-2 p-2 hover:bg-muted/50 rounded-md">
+                    <Checkbox
+                      id={`assign-${employee.id}`}
+                      checked={selectedEmployees.includes(employee.id)}
+                      onCheckedChange={() => toggleEmployee(employee.id)}
+                    />
+                    <label
+                      htmlFor={`assign-${employee.id}`}
+                      className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer flex-1"
+                    >
+                      <div>
+                        <div className="font-medium">{employee.name}</div>
+                        <div className="text-xs text-muted-foreground">{employee.email}</div>
+                      </div>
+                    </label>
+                  </div>
+                ))
+              )}
+            </div>
+            {selectedEmployees.length > 0 && (
+              <p className="text-sm text-muted-foreground">
+                {selectedEmployees.length} employee(s) selected - they will receive deadline alerts
+              </p>
+            )}
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setAssignDialogOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button className="flex-1" onClick={handleAssignEmployees}>
+                Save Assignments
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
