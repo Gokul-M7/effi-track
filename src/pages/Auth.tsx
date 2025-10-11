@@ -59,10 +59,10 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 via-accent/15 to-warning/10 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-primary/5 to-primary/10 p-4">
       <Card className="w-full max-w-md shadow-2xl border-2 border-primary/20 backdrop-blur-sm">
         <CardHeader className="space-y-1 text-center">
-          <CardTitle className="text-4xl font-bold bg-gradient-to-r from-primary via-accent to-warning bg-clip-text text-transparent">
+          <CardTitle className="text-4xl font-bold text-primary">
             EFFI-TRACK
           </CardTitle>
           <CardDescription className="text-base">
@@ -100,7 +100,7 @@ const Auth = () => {
             </div>
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90" 
+              className="w-full bg-primary hover:bg-primary/90" 
               disabled={isLoading}
             >
               {isLoading ? (
@@ -116,8 +116,8 @@ const Auth = () => {
             </Button>
             <Button
               type="button"
-              variant="ghost"
-              className="w-full hover:bg-accent/10"
+              variant="outline"
+              className="w-full"
               onClick={() => setIsSignUp(!isSignUp)}
               disabled={isLoading}
             >

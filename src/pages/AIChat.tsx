@@ -67,7 +67,7 @@ const AIChat = () => {
   return (
     <div className="h-[calc(100vh-6rem)] flex flex-col">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+        <h1 className="text-3xl font-bold tracking-tight text-primary">
           AI Assistant
         </h1>
         <p className="text-muted-foreground mt-2">
@@ -88,15 +88,15 @@ const AIChat = () => {
                   style={{ animationDelay: `${index * 0.05}s` }}
                 >
                   {message.role === "assistant" && (
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg">
                       <Bot className="h-5 w-5 text-white" />
                     </div>
                   )}
                   <div
                     className={`max-w-[75%] rounded-2xl px-5 py-3 shadow-md ${
                       message.role === "user"
-                        ? "bg-gradient-to-br from-primary to-primary/90 text-white"
-                        : "bg-gradient-to-br from-muted to-muted/50 border border-border"
+                        ? "bg-primary text-white"
+                        : "bg-muted border border-border"
                     }`}
                   >
                     <p className="text-sm leading-relaxed whitespace-pre-wrap">
@@ -104,7 +104,7 @@ const AIChat = () => {
                     </p>
                   </div>
                   {message.role === "user" && (
-                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-accent to-warning flex items-center justify-center shadow-lg">
+                    <div className="flex-shrink-0 w-10 h-10 rounded-full bg-info flex items-center justify-center shadow-lg">
                       <User className="h-5 w-5 text-white" />
                     </div>
                   )}
@@ -112,14 +112,14 @@ const AIChat = () => {
               ))}
               {isLoading && (
                 <div className="flex gap-3 justify-start animate-slide-up">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg">
+                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg">
                     <Bot className="h-5 w-5 text-white" />
                   </div>
-                  <div className="bg-gradient-to-br from-muted to-muted/50 border border-border rounded-2xl px-5 py-3">
+                  <div className="bg-muted border border-border rounded-2xl px-5 py-3">
                     <div className="flex gap-1">
                       <div className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: "0s" }} />
-                      <div className="w-2 h-2 rounded-full bg-accent animate-bounce" style={{ animationDelay: "0.2s" }} />
-                      <div className="w-2 h-2 rounded-full bg-warning animate-bounce" style={{ animationDelay: "0.4s" }} />
+                      <div className="w-2 h-2 rounded-full bg-primary/70 animate-bounce" style={{ animationDelay: "0.2s" }} />
+                      <div className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "0.4s" }} />
                     </div>
                   </div>
                 </div>
@@ -140,7 +140,7 @@ const AIChat = () => {
                 onClick={sendMessage} 
                 disabled={isLoading || !input.trim()}
                 size="lg"
-                className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-lg hover:shadow-xl transition-all"
+                className="bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all"
               >
                 <Send className="h-5 w-5" />
               </Button>

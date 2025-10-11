@@ -138,9 +138,9 @@ const Rewards = () => {
   };
 
   const getRankBadge = (index: number) => {
-    if (index === 0) return <Badge className="bg-warning text-warning-foreground">🥇 1st</Badge>;
-    if (index === 1) return <Badge className="bg-muted text-muted-foreground">🥈 2nd</Badge>;
-    if (index === 2) return <Badge className="bg-accent text-accent-foreground">🥉 3rd</Badge>;
+    if (index === 0) return <Badge className="bg-primary text-primary-foreground">🥇 1st</Badge>;
+    if (index === 1) return <Badge className="bg-secondary text-secondary-foreground">🥈 2nd</Badge>;
+    if (index === 2) return <Badge className="bg-info text-info-foreground">🥉 3rd</Badge>;
     return <Badge variant="outline">#{index + 1}</Badge>;
   };
 
@@ -148,7 +148,7 @@ const Rewards = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight bg-gradient-to-r from-warning via-accent to-primary bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold tracking-tight text-primary">
             Rewards & Gamification
           </h1>
           <p className="text-muted-foreground mt-2">
@@ -157,14 +157,14 @@ const Rewards = () => {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-gradient-to-r from-warning to-accent hover:from-warning/90 hover:to-accent/90 shadow-lg">
+            <Button className="bg-primary hover:bg-primary/90 shadow-lg">
               <Plus className="mr-2 h-4 w-4" />
               Award Points
             </Button>
           </DialogTrigger>
-          <DialogContent className="border-2 border-warning/20">
+          <DialogContent className="border-2 border-primary/20">
             <DialogHeader>
-              <DialogTitle className="text-2xl bg-gradient-to-r from-warning to-accent bg-clip-text text-transparent">
+              <DialogTitle className="text-2xl text-primary">
                 Award Reward Points
               </DialogTitle>
               <DialogDescription>
@@ -181,7 +181,7 @@ const Rewards = () => {
                   }
                   required
                 >
-                  <SelectTrigger className="border-warning/30">
+                  <SelectTrigger className="border-primary/30">
                     <SelectValue placeholder="Select employee" />
                   </SelectTrigger>
                   <SelectContent>
@@ -202,7 +202,7 @@ const Rewards = () => {
                   value={formData.points}
                   onChange={(e) => setFormData({ ...formData, points: e.target.value })}
                   required
-                  className="border-warning/30"
+                  className="border-primary/30"
                 />
               </div>
               <div className="space-y-2">
@@ -213,12 +213,12 @@ const Rewards = () => {
                   onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
                   rows={3}
                   required
-                  className="border-warning/30"
+                  className="border-primary/30"
                 />
               </div>
               <Button 
                 type="submit" 
-                className="w-full bg-gradient-to-r from-warning to-accent hover:from-warning/90 hover:to-accent/90"
+                className="w-full bg-primary hover:bg-primary/90"
               >
                 Award Points
               </Button>
@@ -233,11 +233,11 @@ const Rewards = () => {
             key={emp.id}
             className={`hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 animate-slide-up ${
               index === 0
-                ? "border-2 border-warning bg-gradient-to-br from-warning/5 to-warning/10"
+                ? "border-2 border-primary bg-gradient-to-br from-primary/5 to-primary/10"
                 : index === 1
-                ? "border-2 border-muted-foreground/30 bg-gradient-to-br from-muted/50 to-muted"
+                ? "border-2 border-secondary"
                 : index === 2
-                ? "border-2 border-accent bg-gradient-to-br from-accent/5 to-accent/10"
+                ? "border-2 border-info bg-gradient-to-br from-info/5 to-info/10"
                 : "border-border"
             }`}
             style={{ animationDelay: `${index * 0.1}s` }}
@@ -248,11 +248,11 @@ const Rewards = () => {
                   <Trophy
                     className={`h-6 w-6 ${
                       index === 0
-                        ? "text-warning drop-shadow-lg"
+                        ? "text-primary"
                         : index === 1
-                        ? "text-muted-foreground"
+                        ? "text-secondary-foreground"
                         : index === 2
-                        ? "text-accent drop-shadow-lg"
+                        ? "text-info"
                         : "text-muted-foreground"
                     }`}
                   />
@@ -264,15 +264,15 @@ const Rewards = () => {
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-primary/10">
                   <span className="text-sm font-medium">Total Points:</span>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-warning to-accent bg-clip-text text-transparent">
+                  <span className="text-2xl font-bold text-primary">
                     {emp.totalPoints}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-success/10 to-success/5">
+                <div className="flex items-center justify-between p-3 rounded-lg bg-success/10">
                   <span className="text-sm font-medium">Completed Tasks:</span>
-                  <Badge className="bg-gradient-to-r from-success to-success/80">{emp.completedTasks}</Badge>
+                  <Badge className="bg-success">{emp.completedTasks}</Badge>
                 </div>
               </div>
             </CardContent>
@@ -281,9 +281,9 @@ const Rewards = () => {
       </div>
 
       {employeePoints.length === 0 && (
-        <Card className="border-2 border-dashed border-warning/30">
+        <Card className="border-2 border-dashed border-primary/30">
           <CardContent className="py-12 text-center">
-            <Trophy className="h-16 w-16 mx-auto mb-4 text-warning opacity-50" />
+            <Trophy className="h-16 w-16 mx-auto mb-4 text-primary opacity-50" />
             <p className="text-lg text-muted-foreground">
               No employee data available. Start awarding points to see the leaderboard!
             </p>
